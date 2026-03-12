@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sky Queen | Cart</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#e80071;
+  --light:#fff1f6;
+  --dark:#333;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,sans-serif;
+}
+
+body{
+  background:var(--light);
+  padding:30px 15px;
+}
+
+.cart{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:30px;
+  border-radius:22px;
+  box-shadow:0 20px 40px rgba(232,0,113,.15);
+}
+
+.cart-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.cart-header h2{
+  color:var(--pink);
+}
+
+#count{
+  font-size:14px;
+  color:#777;
+}
+
+#items{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.cart-item{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  border:1px solid #eee;
+  padding:15px;
+  border-radius:16px;
+}
+
+.cart-item img{
+  width:85px;
+  height:85px;
+  object-fit:cover;
+  border-radius:12px;
+  border:1px solid #ddd;
+}
+
+.item-info{
+  flex:1;
+}
+
+.item-info h4{
+  color:var(--dark);
+  margin-bottom:6px;
+}
+
+.item-info p{
+  font-size:13px;
+  color:#777;
+}
+
+.item-price{
+  font-weight:600;
+  color:var(--pink);
+  margin-right:10px;
+}
+
+.remove{
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:#999;
+  font-size:14px;
+}
+
+.remove:hover{
+  color:var(--pink);
+}
+
+.summary{
+  margin-top:30px;
+  border-top:2px dashed #eee;
+  padding-top:20px;
+}
+
+.total{
+  display:flex;
+  justify-content:space-between;
+  font-size:22px;
+  font-weight:600;
+  margin-bottom:15px;
+}
+
+.checkout{
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg,#ff4da6,#e80071);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.empty{
+  text-align:center;
+  padding:40px 10px;
+  color:#777;
+}
+
+@media(max-width:600px){
+  .cart-item{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .item-price{
+    margin:10px 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="cart">
+  <div class="cart-header">
+    <h2>🛍 Sky Queen Cart</h2>
+    <span id="count"></span>
+  </div>
+
+  <div id="items"></div>
+
+  <div class="summary" id="summary">
+    <div class="total">
+      <span>Total</span>
+      <span id="total">₹0</span>
+    </div>
+    <button class="checkout" onclick="checkout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const itemsDiv = document.getElementById("items");
+const totalDiv = document.getElementById("total");
+const countDiv = document.getElementById("count");
+const summaryDiv = document.getElementById("summary");
+
+function renderCart(){
+  itemsDiv.innerHTML = "";
+  let total = 0;
+
+  if(cart.length === 0){
+    itemsDiv.innerHTML = `
+      <div class="empty">
+        <h3>Your cart is empty 💔</h3>
+        <p>Add some sparkle ✨</p>
+      </div>`;
+    summaryDiv.style.display = "none";
+    countDiv.innerText = "";
+    return;
+  }
+
+  summaryDiv.style.display = "block";
+  countDiv.innerText = cart.length + " items";
+
+  cart.forEach((item,index)=>{
+    const imgSrc = item.img || "https://via.placeholder.com/85?text=No+Image";
+
+    total += item.price * item.qty;
+
+    itemsDiv.innerHTML += `
+      <div class="cart-item">
+        <img src="${imgSrc}" 
+             onerror="this.src='https://via.placeholder.com/85?text=No+Image'">
+        <div class="item-info">
+          <h4>${item.name}</h4>
+          <p>Qty: ${item.qty}</p>
+        </div>
+        <div class="item-price">₹${item.price * item.qty}</div>
+        <button class="remove" onclick="removeItem(${index})">Remove</button>
+      </div>
+    `;
+  });
+
+  totalDiv.innerText = "₹" + total;
+}
+
+function removeItem(i){
+  cart.splice(i,1);
+  localStorage.setItem("cart",JSON.stringify(cart));
+  renderCart();
+}
+
+function checkout(){
+  alert("Checkout coming soon 💳✨");
+}
+
+renderCart();
+</script>
+
+</body>
+</html>

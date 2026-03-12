@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sky Queen | Gift Hampers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
+body{background:#fff5f8;padding-top:80px}
+
+/* HEADER */
+header{
+  background:#fff;padding:18px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+}
+.logo{font-size:28px;font-weight:700;color:#e80071}
+.icons i{font-size:22px;position:relative}
+.cart-count{
+  position:absolute;top:-8px;right:-10px;
+  background:#e80071;color:#fff;font-size:12px;
+  padding:2px 6px;border-radius:50%;
+}
+
+/* FILTER BAR */
+.filters{
+  display:flex;
+  gap:20px;
+  padding:20px 40px;
+  flex-wrap:wrap;
+}
+select{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+/* PRODUCTS */
+.container{padding:20px 40px}
+.products{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:30px
+}
+
+.card{
+  background:#fff;border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 15px 35px rgba(232,0,113,.15);
+  position:relative;
+}
+.card img{width:100%;height:240px;object-fit:cover}
+.info{padding:16px}
+.price{margin:8px 0;font-weight:600}
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#e80071;
+  color:#fff;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* QUICK VIEW */
+.quick{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  transition:.3s;
+}
+.card:hover .quick{opacity:1}
+.quick button{
+  width:auto;
+  padding:10px 20px;
+  background:#fff;
+  color:#000;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+}
+.modal-box{
+  background:#fff;
+  padding:20px;
+  width:340px;
+  border-radius:16px;
+}
+.modal-box img{
+  width:100%;
+  border-radius:12px;
+}
+.close{
+  float:right;
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .products{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .products{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Sky Queen</div>
+  <div class="icons">
+    <!-- CART LINK -->
+    <a href="cart.html" style="color:inherit;text-decoration:none;position:relative;">
+      <i class="fa-solid fa-bag-shopping">
+        <span class="cart-count" id="cartCount">0</span>
+      </i>
+    </a>
+  </div>
+</header>
+
+<!-- FILTERS -->
+<div class="filters">
+  <select id="categoryFilter">
+    <option value="all">All Categories</option>
+    <option value="Birthday">Birthday</option>
+    <option value="Valentine">Valentine</option>
+    <option value="Luxury">Luxury</option>
+  </select>
+
+  <select id="occasionFilter">
+    <option value="all">All Occasions</option>
+    <option value="Her">For Her</option>
+    <option value="Him">For Him</option>
+    <option value="Couple">Couple</option>
+  </select>
+
+  <select id="priceFilter">
+    <option value="all">All Prices</option>
+    <option value="2000">Below ₹2000</option>
+    <option value="3000">Below ₹3000</option>
+    <option value="5000">Below ₹5000</option>
+  </select>
+</div>
+
+<div class="container">
+  <div class="products" id="products"></div>
+</div>
+
+<!-- QUICK VIEW MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <span class="close" onclick="modal.style.display='none'">✕</span>
+    <img id="mImg">
+    <h3 id="mTitle"></h3>
+    <p id="mPrice"></p>
+    <button id="mAdd">Add to Cart</button>
+  </div>
+</div>
+
+<script>
+const productsEl = document.getElementById('products');
+const cartCountEl = document.getElementById('cartCount');
+
+const categoryFilter = document.getElementById('categoryFilter');
+const occasionFilter = document.getElementById('occasionFilter');
+const priceFilter = document.getElementById('priceFilter');
+
+const modal = document.getElementById('modal');
+const mImg = document.getElementById('mImg');
+const mTitle = document.getElementById('mTitle');
+const mPrice = document.getElementById('mPrice');
+const mAdd = document.getElementById('mAdd');
+
+let currentProduct=null;
+
+/* PRODUCT DATA */
+const products = [
+ {name:"Rose Love Box",category:"Valentine",occasion:"Her",price:1800,img:"Flowers_pic.jpeg"},
+ {name:"Birthday Bliss Hamper",category:"Birthday",occasion:"Her",price:2200,img:"gifthamer_1.jpeg"},
+ {name:"Luxury Royal Box",category:"Luxury",occasion:"Him",price:4500,img:"gifthamper_2.jpeg"},
+ {name:"Sweet Couple Surprise",category:"Valentine",occasion:"Couple",price:3200,img:"gifthamper_3.jpeg"},
+ {name:"Premium Gold Hamper",category:"Luxury",occasion:"Her",price:5200,img:"gifthamper_4.jpeg"}
+];
+
+/* CART */
+function updateCart(){
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  cartCountEl.innerText = cart.reduce((s,i)=>s+i.qty,0);
+}
+function addToCart(name, price){
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  let item = cart.find(i=>i.name===name);
+  item ? item.qty++ : cart.push({name,price,qty:1});
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+}
+
+/* QUICK VIEW */
+function openQuickView(p){
+  currentProduct=p;
+  mImg.src=p.img;
+  mTitle.innerText=p.name;
+  mPrice.innerText='₹'+p.price;
+  modal.style.display='flex';
+}
+mAdd.onclick=()=>{
+  addToCart(currentProduct.name,currentProduct.price);
+  modal.style.display='none';
+  window.location.href="cart.html";
+};
+
+/* RENDER */
+function renderProducts(list){
+  productsEl.innerHTML='';
+  list.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <img src="${p.img}">
+      <div class="quick"><button>Quick View</button></div>
+      <div class="info">
+        <h4>${p.name}</h4>
+        <div class="price">₹${p.price}</div>
+        <button>Add to Cart</button>
+      </div>
+    `;
+    card.querySelector('.quick button').onclick=()=>openQuickView(p);
+    card.querySelector('.info button').onclick=()=>addToCart(p.name,p.price);
+    productsEl.appendChild(card);
+  });
+}
+
+/* FILTER */
+function applyFilter(){
+  let filtered=[...products];
+  if(categoryFilter.value!=='all')
+    filtered=filtered.filter(p=>p.category===categoryFilter.value);
+  if(occasionFilter.value!=='all')
+    filtered=filtered.filter(p=>p.occasion===occasionFilter.value);
+  if(priceFilter.value!=='all')
+    filtered=filtered.filter(p=>p.price<=priceFilter.value);
+  renderProducts(filtered);
+}
+
+categoryFilter.onchange=applyFilter;
+occasionFilter.onchange=applyFilter;
+priceFilter.onchange=applyFilter;
+
+/* INIT */
+renderProducts(products);
+updateCart();
+</script>
+
+</body>
+</html>
