@@ -2,149 +2,99 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sky Queen | Cart</title>
+<title>Sky Queen Cart</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --pink:#e80071;
-  --light:#fff1f6;
-  --dark:#333;
-}
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Poppins,sans-serif;
-}
-
 body{
-  background:var(--light);
-  padding:30px 15px;
+  font-family:Poppins, sans-serif;
+  background:#fff1f6;
+  padding:20px;
 }
 
 .cart{
   max-width:900px;
   margin:auto;
   background:#fff;
-  padding:30px;
-  border-radius:22px;
-  box-shadow:0 20px 40px rgba(232,0,113,.15);
-}
-
-.cart-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
-}
-
-.cart-header h2{
-  color:var(--pink);
-}
-
-#count{
-  font-size:14px;
-  color:#777;
-}
-
-#items{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 .cart-item{
   display:flex;
   align-items:center;
-  gap:18px;
-  border:1px solid #eee;
-  padding:15px;
-  border-radius:16px;
+  gap:15px;
+  border-bottom:1px solid #eee;
+  padding:15px 0;
 }
 
 .cart-item img{
-  width:85px;
-  height:85px;
+  width:90px;
+  height:90px;
   object-fit:cover;
-  border-radius:12px;
-  border:1px solid #ddd;
+  border-radius:10px;
+  border:1px solid #eee;
 }
 
 .item-info{
   flex:1;
 }
 
-.item-info h4{
-  color:var(--dark);
-  margin-bottom:6px;
+.qty{
+  display:flex;
+  gap:8px;
+  margin-top:8px;
 }
 
-.item-info p{
-  font-size:13px;
-  color:#777;
+.qty button{
+  background:#fc2779;
+  color:#fff;
+  border:none;
+  padding:5px 10px;
+  border-radius:5px;
+  cursor:pointer;
 }
 
-.item-price{
-  font-weight:600;
-  color:var(--pink);
-  margin-right:10px;
+.price{
+  color:#fc2779;
+  font-weight:bold;
 }
 
 .remove{
-  background:none;
+  background:black;
+  color:white;
   border:none;
+  padding:5px 10px;
+  border-radius:5px;
   cursor:pointer;
-  color:#999;
-  font-size:14px;
-}
-
-.remove:hover{
-  color:var(--pink);
-}
-
-.summary{
-  margin-top:30px;
-  border-top:2px dashed #eee;
-  padding-top:20px;
 }
 
 .total{
+  margin-top:20px;
   display:flex;
   justify-content:space-between;
-  font-size:22px;
+  font-size:20px;
   font-weight:600;
-  margin-bottom:15px;
 }
 
 .checkout{
   width:100%;
-  padding:14px;
-  background:linear-gradient(135deg,#ff4da6,#e80071);
-  color:#fff;
+  margin-top:15px;
+  padding:12px;
+  background:#fc2779;
+  color:white;
   border:none;
-  border-radius:14px;
-  font-size:16px;
+  border-radius:8px;
   cursor:pointer;
 }
 
 .empty{
   text-align:center;
-  padding:40px 10px;
-  color:#777;
-}
-
-@media(max-width:600px){
-  .cart-item{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-  .item-price{
-    margin:10px 0;
-  }
+  padding:40px;
+  color:gray;
 }
 </style>
 </head>
@@ -152,63 +102,65 @@ body{
 <body>
 
 <div class="cart">
-  <div class="cart-header">
-    <h2>🛍 Sky Queen Cart</h2>
-    <span id="count"></span>
-  </div>
+  <h2>🛍 Sky Queen Cart</h2>
 
   <div id="items"></div>
 
-  <div class="summary" id="summary">
-    <div class="total">
-      <span>Total</span>
-      <span id="total">₹0</span>
-    </div>
-    <button class="checkout" onclick="checkout()">Proceed to Checkout</button>
+  <div class="total">
+    <span>Total</span>
+    <span id="total">₹0</span>
   </div>
+
+  <button class="checkout" onclick="checkout()">Checkout</button>
 </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
+
+// 🛒 LOAD CART
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const itemsDiv = document.getElementById("items");
 const totalDiv = document.getElementById("total");
-const countDiv = document.getElementById("count");
-const summaryDiv = document.getElementById("summary");
 
+// 🛍 RENDER CART
 function renderCart(){
-  itemsDiv.innerHTML = "";
+
   let total = 0;
+  itemsDiv.innerHTML = "";
 
   if(cart.length === 0){
-    itemsDiv.innerHTML = `
-      <div class="empty">
-        <h3>Your cart is empty 💔</h3>
-        <p>Add some sparkle ✨</p>
-      </div>`;
-    summaryDiv.style.display = "none";
-    countDiv.innerText = "";
+    itemsDiv.innerHTML = `<div class="empty">🛒 Cart is empty</div>`;
+    totalDiv.innerText = "₹0";
     return;
   }
 
-  summaryDiv.style.display = "block";
-  countDiv.innerText = cart.length + " items";
-
   cart.forEach((item,index)=>{
-    const imgSrc = item.img || "https://via.placeholder.com/85?text=No+Image";
 
     total += item.price * item.qty;
 
     itemsDiv.innerHTML += `
       <div class="cart-item">
-        <img src="${imgSrc}" 
-             onerror="this.src='https://via.placeholder.com/85?text=No+Image'">
+
+        <!-- ✅ SAME IMAGE FROM PRODUCT PAGE -->
+        <img src="${item.img}" 
+             onerror="this.src='images/bangles.png'">
+
         <div class="item-info">
-          <h4>${item.name}</h4>
-          <p>Qty: ${item.qty}</p>
+          <h3>${item.name}</h3>
+
+          <div class="qty">
+            <button onclick="changeQty(${index},-1)">-</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty(${index},1)">+</button>
+          </div>
         </div>
-        <div class="item-price">₹${item.price * item.qty}</div>
-        <button class="remove" onclick="removeItem(${index})">Remove</button>
+
+        <div class="price">₹${item.price * item.qty}</div>
+
+        <button class="remove" onclick="removeItem(${index})">X</button>
+
       </div>
     `;
   });
@@ -216,17 +168,56 @@ function renderCart(){
   totalDiv.innerText = "₹" + total;
 }
 
-function removeItem(i){
-  cart.splice(i,1);
-  localStorage.setItem("cart",JSON.stringify(cart));
+// ➕➖ QTY
+function changeQty(i,val){
+  cart[i].qty += val;
+
+  if(cart[i].qty <= 0){
+    cart.splice(i,1);
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
 }
 
-function checkout(){
-  alert("Checkout coming soon 💳✨");
+// ❌ REMOVE
+function removeItem(i){
+  cart.splice(i,1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
 }
 
+// 💳 CHECKOUT
+function checkout(){
+
+  if(cart.length === 0){
+    alert("Cart empty ❌");
+    return;
+  }
+
+  let total = 0;
+  cart.forEach(i => total += i.price * i.qty);
+
+  var options = {
+      key: "rzp_test_ShgmffSoB7a2f2",
+      amount: total * 100,
+      currency: "INR",
+      name: "Sky Queen",
+      description: "Order Payment",
+
+      handler: function (){
+        alert("Payment Successful ✅");
+        localStorage.removeItem("cart");
+        location.reload();
+      }
+  };
+
+  new Razorpay(options).open();
+}
+
+// 🚀 INIT
 renderCart();
+
 </script>
 
 </body>

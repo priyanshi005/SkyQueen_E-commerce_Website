@@ -5,291 +5,381 @@
 <title>Sky Queen | Makeup Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
 <style>
+
+:root{
+--primary:#fc2779;
+--dark:#111;
+--bg:#fafafa;
+}
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
-body{background:#fff5f8;padding-top:80px}
+body{background:var(--bg);color:var(--dark);}
 
 /* HEADER */
 header{
-  background:#fff;padding:18px 40px;
-  display:flex;justify-content:space-between;align-items:center;
-  box-shadow:0 6px 20px rgba(0,0,0,.05);
-  position:fixed;top:0;left:0;right:0;z-index:1000;
-}
-.logo{font-size:28px;font-weight:700;color:#e80071}
-.icons i{font-size:22px;position:relative}
-.cart-count{
-  position:absolute;top:-8px;right:-10px;
-  background:#e80071;color:#fff;font-size:12px;
-  padding:2px 6px;border-radius:50%;
+background:#fff;
+padding:16px 6%;
+display:flex;
+align-items:center;
+justify-content:space-between;
+position:sticky;
+top:0;
+z-index:2000;
+box-shadow:0 2px 12px rgba(0,0,0,.06);
+flex-wrap:wrap;
 }
 
-/* FILTER BAR */
-.filters{
-  display:flex;
-  gap:20px;
-  padding:20px 40px;
-  flex-wrap:wrap;
+.logo img{height:52px;}
+
+nav ul{display:flex;gap:30px;list-style:none;}
+nav ul li a{
+text-decoration:none;
+color:#333;
+font-weight:500;
+position:relative;
+padding-bottom:5px;
 }
+
+nav ul li a::after{
+content:"";
+position:absolute;
+bottom:0;
+left:0;
+width:0%;
+height:2px;
+background:var(--primary);
+transition:.3s;
+}
+
+nav ul li a:hover{color:var(--primary);}
+nav ul li a:hover::after{width:100%;}
+nav ul li a.active{color:var(--primary);}
+nav ul li a.active::after{width:100%;}
+
+.menu-btn{display:none;font-size:22px;cursor:pointer;}
+
+/* SEARCH */
+.search-box{
+display:flex;
+align-items:center;
+background:#f5f5f5;
+padding:10px 18px;
+border-radius:50px;
+gap:10px;
+width:260px;
+border:1px solid #eee;
+}
+
+.search-box input{
+border:none;
+outline:none;
+background:transparent;
+width:100%;
+}
+
+/* CART */
+.icons{position:relative;font-size:20px;}
+.cart-count{
+position:absolute;
+top:-8px;
+right:-10px;
+background:var(--primary);
+color:#fff;
+font-size:11px;
+padding:2px 6px;
+border-radius:50%;
+}
+
+/* FILTER */
+.filters{
+display:flex;
+gap:20px;
+padding:20px 6%;
+flex-wrap:wrap;
+}
+
 select{
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
+padding:10px;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
 /* PRODUCTS */
-.container{padding:20px 40px}
+.container{padding:20px 6%;}
 .products{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:30px
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
 }
 
 .card{
-  background:#fff;border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 15px 35px rgba(232,0,113,.15);
-  position:relative;
-}
-.card img{width:100%;height:240px;object-fit:cover}
-.info{padding:16px}
-.price{margin:8px 0;font-weight:600}
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  background:#e80071;
-  color:#fff;
-  border-radius:10px;
-  cursor:pointer;
+background:#fff;
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+transition:.3s;
+position:relative;
 }
 
-/* QUICK VIEW OVERLAY */
-.quick{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  transition:.3s;
+.card:hover{transform:translateY(-6px);}
+
+.card img{
+width:100%;
+height:240px;
+object-fit:cover;
 }
-.card:hover .quick{opacity:1}
+
+.info{padding:16px;}
+.price{margin:8px 0;font-weight:600;}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+background:var(--primary);
+color:#fff;
+border-radius:10px;
+cursor:pointer;
+}
+
+/* QUICK */
+.quick{
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.55);
+display:flex;
+justify-content:center;
+align-items:center;
+opacity:0;
+transition:.3s;
+}
+
+.card:hover .quick{opacity:1;}
+
 .quick button{
-  width:auto;
-  padding:10px 20px;
-  background:#fff;
-  color:#000;
+background:#fff;
+color:#000;
+width:auto;
+padding:10px 18px;
 }
 
 /* MODAL */
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:2000;
-}
-.modal-box{
-  background:#fff;
-  padding:20px;
-  width:340px;
-  border-radius:16px;
-}
-.modal-box img{
-  width:100%;
-  border-radius:12px;
-}
-.close{
-  float:right;
-  font-size:20px;
-  cursor:pointer;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:3000;
 }
 
-/* RESPONSIVE */
-@media(max-width:900px){
-  .products{grid-template-columns:repeat(2,1fr)}
+.modal-box{
+background:#fff;
+padding:20px;
+width:320px;
+border-radius:16px;
+text-align:center;
 }
-@media(max-width:600px){
-  .products{grid-template-columns:1fr}
+
+.modal-box img{
+width:100%;
+height:200px;
+object-fit:cover;
+border-radius:12px;
+margin-bottom:10px;
 }
+
+/* MOBILE */
+@media(max-width:768px){
+.menu-btn{display:block;}
+nav{display:none;}
+.search-box{display:none;}
+.products{grid-template-columns:1fr;}
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">Sky Queen</div>
-  <div class="icons">
-    <!-- CART LINK -->
-    <a href="cart.html" style="color:inherit;text-decoration:none;position:relative;">
-      <i class="fa-solid fa-bag-shopping">
-        <span class="cart-count" id="cartCount">0</span>
-      </i>
-    </a>
-  </div>
+
+<div class="logo">
+<a href="index.html"><img src="logo.png"></a>
+</div>
+
+<i class="fa-solid fa-bars menu-btn" onclick="toggleMenu()"></i>
+
+<nav id="nav">
+<ul>
+<li><a href="product.html" class="active">Makeup</a></li>
+<li><a href="jewellery.html">Jewellery</a></li>
+<li><a href="JewelleryBox.html">Organizer Box</a></li>
+<li><a href="Gifthamper.html">Gift Hamper</a></li>
+</ul>
+</nav>
+
+<div class="search-box">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input type="text" id="searchInput" placeholder="Search makeup...">
+</div>
+
+<div class="icons">
+<a href="cart.html">
+<i class="fa-solid fa-bag-shopping">
+<span class="cart-count" id="cartCount">0</span>
+</i>
+</a>
+</div>
+
 </header>
 
-<!-- FILTERS -->
+<!-- FILTER -->
 <div class="filters">
-  <select id="brandFilter">
-    <option value="all">All Brands</option>
-    <option value="Sugar">Sugar</option>
-    <option value="Matt Look">Matt Look</option>
-    
-  </select>
+<select id="brandFilter">
+<option value="all">All Brands</option>
+<option value="Lipstick">Lipstick</option>
+</select>
 
-  <select id="typeFilter">
-    <option value="all">All Products</option>
-    <option value="Lipstick">Lipstick</option>
-    <option value="Mascara">Lipbam</option>
-  </select>
-
-  <select id="priceFilter">
-    <option value="all">All Prices</option>
-    <option value="500">Below ₹500</option>
-    <option value="1000">Below ₹1000</option>
-    <option value="1500">Below ₹1500</option>
-  </select>
+<select id="priceFilter">
+<option value="all">All Prices</option>
+<option value="500">Below ₹500</option>
+<option value="1000">Below ₹1000</option>
+</select>
 </div>
 
 <div class="container">
-  <div class="products" id="products"></div>
+<div class="products" id="products"></div>
 </div>
 
-<!-- QUICK VIEW MODAL -->
+<!-- MODAL -->
 <div class="modal" id="modal">
-  <div class="modal-box">
-    <span class="close" onclick="modal.style.display='none'">✕</span>
-    <img id="mImg">
-    <h3 id="mTitle"></h3>
-    <p id="mPrice"></p>
-    <button id="mAdd">Add to Cart</button>
-  </div>
+<div class="modal-box">
+<span onclick="modal.style.display='none'">✕</span>
+<img id="mImg">
+<h3 id="mTitle"></h3>
+<p id="mPrice"></p>
+<button id="mAdd">Add to Cart</button>
+</div>
 </div>
 
 <script>
-const productsEl = document.getElementById('products');
-const cartCountEl = document.getElementById('cartCount');
 
-const brandFilter = document.getElementById('brandFilter');
-const typeFilter = document.getElementById('typeFilter');
-const priceFilter = document.getElementById('priceFilter');
-
-const modal = document.getElementById('modal');
-const mImg = document.getElementById('mImg');
-const mTitle = document.getElementById('mTitle');
-const mPrice = document.getElementById('mPrice');
-const mAdd = document.getElementById('mAdd');
-
-let currentProduct=null;
-
-/* PRODUCT DATA */
-const products = [
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:499,img:"Sugar_01.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:899,img:"Sugar_02.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:1499,img:"Sugar_03.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:899,img:"Sugar_04.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:1499,img:"Sugar_05.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:899,img:"Sugar_06.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:1499,img:"Sugar_07.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"LipstickLipstick",price:899,img:"Sugar_08.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"LipstickLipstick",price:1499,img:"Sugar_09.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"LipstickLipstick",price:899,img:"Sugar_10.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"LipstickLipstick",price:1499,img:"Sugar_11.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:899,img:"SugarPop_01.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:1499,img:"SugarPop_02.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:899,img:"SugarPop_03.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:1499,img:"SugarPop_04.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:899,img:"SugarPop_05.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:1499,img:"SugarPop_06.jpeg"},
- {name:"Sugar Lipstick",brand:"Sugar",type:"Lipstick",price:899,img:"SugarPop_07.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_01.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_02.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_03.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_04.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_06.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_07.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_08.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_09.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_10.jpeg"},
- {name:"Matt Look",brand:"Matt Look",type:"Lipstick",price:899,img:"ML_011.jpeg"}
-
+// PRODUCTS
+const products=[
+{name:"Lipstick 01",brand:"Lipstick",price:350,img:"ML_01.jpeg"},
+{name:"Lipstick 02",brand:"Lipstick",price:400,img:"ML_02.jpeg"},
+{name:"Lipstick 03",brand:"Lipstick",price:450,img:"ML_03.jpeg"},
+{name:"Lipstick 04",brand:"Lipstick",price:350,img:"ML_04.jpeg"},
+{name:"Lipstick 05",brand:"Lipstick",price:400,img:"ML_05.jpeg"},
+{name:"Lipstick 06",brand:"Lipstick",price:450,img:"ML_06.jpeg"},
+{name:"Lipstick 07",brand:"Lipstick",price:350,img:"ML_07.jpeg"},
+{name:"Lipstick 08",brand:"Lipstick",price:400,img:"ML_08.jpeg"},
+{name:"Lipstick 09",brand:"Lipstick",price:450,img:"ML_09.jpeg"},
+{name:"Lipstick 10",brand:"Lipstick",price:300,img:"ML_10.jpeg"}
 ];
 
-/* CART */
+const productsEl=document.getElementById("products");
+
+// CART
 function updateCart(){
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  cartCountEl.innerText = cart.reduce((s,i)=>s+i.qty,0);
-}
-function addToCart(name, price){
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  let item = cart.find(i=>i.name===name);
-  item ? item.qty++ : cart.push({name,price,qty:1});
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+cartCount.innerText=cart.reduce((s,i)=>s+i.qty,0);
 }
 
-/* QUICK VIEW */
-function openQuickView(p){
-  currentProduct=p;
-  mImg.src=p.img;
-  mTitle.innerText=p.name;
-  mPrice.innerText='₹'+p.price;
-  modal.style.display='flex';
-}
-mAdd.onclick=()=>{
-  addToCart(currentProduct.name,currentProduct.price);
-  modal.style.display='none';
-  window.location.href="cart.html";
-};
-
-/* RENDER */
-function renderProducts(list){
-  productsEl.innerHTML='';
-  list.forEach(p=>{
-    const card=document.createElement('div');
-    card.className='card';
-    card.innerHTML=`
-      <img src="${p.img}">
-      <div class="quick"><button>Quick View</button></div>
-      <div class="info">
-        <h4>${p.name}</h4>
-        <div class="price">₹${p.price}</div>
-        <button>Add to Cart</button>
-      </div>
-    `;
-    card.querySelector('.quick button').onclick=()=>openQuickView(p);
-    card.querySelector('.info button').onclick=()=>addToCart(p.name,p.price);
-    productsEl.appendChild(card);
-  });
+function addToCart(name,price,img){
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+let item=cart.find(i=>i.name===name);
+item?item.qty++:cart.push({name,price,img,qty:1});
+localStorage.setItem("cart",JSON.stringify(cart));
+updateCart();
 }
 
-/* FILTER */
+// BUTTON EFFECT
+function handleAdd(btn,name,price,img){
+addToCart(name,price,img);
+
+btn.innerText="Added ✓";
+btn.style.background="green";
+
+setTimeout(()=>{
+btn.innerText="Add to Cart";
+btn.style.background="#fc2779";
+},1000);
+}
+
+// RENDER
+function render(list){
+productsEl.innerHTML="";
+list.forEach((p,i)=>{
+productsEl.innerHTML+=`
+<div class="card">
+<img src="${p.img}">
+<div class="quick">
+<button onclick="openQuick(${i})">Quick View</button>
+</div>
+<div class="info">
+<h4>${p.name}</h4>
+<div class="price">₹${p.price}</div>
+<button onclick="handleAdd(this,'${p.name}',${p.price},'${p.img}')">
+Add to Cart
+</button>
+</div>
+</div>`;
+});
+}
+
+// FILTER
 function applyFilter(){
-  let filtered=[...products];
-  if(brandFilter.value!=='all')
-    filtered=filtered.filter(p=>p.brand===brandFilter.value);
-  if(typeFilter.value!=='all')
-    filtered=filtered.filter(p=>p.type===typeFilter.value);
-  if(priceFilter.value!=='all')
-    filtered=filtered.filter(p=>p.price<=priceFilter.value);
-  renderProducts(filtered);
+let list=[...products];
+if(brandFilter.value!=="all") list=list.filter(p=>p.brand===brandFilter.value);
+if(priceFilter.value!=="all") list=list.filter(p=>p.price<=priceFilter.value);
+render(list);
 }
 
 brandFilter.onchange=applyFilter;
-typeFilter.onchange=applyFilter;
 priceFilter.onchange=applyFilter;
 
-/* INIT */
-renderProducts(products);
+// SEARCH
+searchInput.addEventListener("input",e=>{
+let q=e.target.value.toLowerCase();
+render(products.filter(p=>p.name.toLowerCase().includes(q)));
+});
+
+// MODAL
+let modal=document.getElementById("modal");
+let current=null;
+
+function openQuick(index){
+let p=products[index];
+current=p;
+
+mImg.src=p.img;
+mTitle.innerText=p.name;
+mPrice.innerText="₹"+p.price;
+
+modal.style.display="flex";
+}
+
+mAdd.onclick=()=>{
+addToCart(current.name,current.price,current.img);
+modal.style.display="none";
+};
+
+// MENU
+function toggleMenu(){
+nav.style.display = nav.style.display === "block" ? "none" : "block";
+}
+
+// INIT
+render(products);
 updateCart();
+
 </script>
 
 </body>
